@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " S ",
+    "III"
+  ],
+  "key": {
+    "S": "minecraft:straw_bed",
+    "I": "minecraft:iron_ingot"
+  },
+  "result": {
+    "id": "straw_bed_modify:marching_straw_bed",
+    "count": 1
+  }
+}

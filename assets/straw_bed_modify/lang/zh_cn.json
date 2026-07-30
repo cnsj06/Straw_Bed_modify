@@ -1,0 +1,10 @@
+{
+  "block.straw_bed_modify.marching_straw_bed": "行军稻草床",
+  "gamerule.category.straw_bed_modify.straw_bed": "稻草床",
+  "gamerule.straw_bed_modify.straw_bed_set_spawn": "设定玩家出生点",
+  "gamerule.straw_bed_modify.straw_bed_explode": "下界/末地点击爆炸",
+  "gamerule.straw_bed_modify.straw_bed_vanish": "睡醒后消失",
+  "command.straw_bed_modify.spawnpoint.set": "稻草床出生点设定：%s",
+  "command.straw_bed_modify.explode.set": "稻草床爆炸设定：%s",
+  "command.straw_bed_modify.vanish.set": "稻草床睡醒消失设定：%s"
+}

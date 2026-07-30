@@ -1,0 +1,11 @@
+{
+  "block.straw_bed_modify.marching_straw_bed": "Marching Straw Bed",
+  "item.straw_bed_modify.marching_straw_bed": "Marching Straw Bed",
+  "gamerule.category.straw_bed_modify.straw_bed": "Straw Bed",
+  "gamerule.straw_bed_modify.straw_bed_set_spawn": "Sets Spawn Point",
+  "gamerule.straw_bed_modify.straw_bed_explode": "Explodes in Nether/End",
+  "gamerule.straw_bed_modify.straw_bed_vanish": "Vanishes After Sleep",
+  "command.straw_bed_modify.spawnpoint.set": "Straw bed spawn point setting: %s",
+  "command.straw_bed_modify.explode.set": "Straw bed explosion setting: %s",
+  "command.straw_bed_modify.vanish.set": "Straw bed vanish-after-sleep setting: %s"
+}

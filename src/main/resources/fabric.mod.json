@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "straw_bed_modify",
+  "version": "${version}",
+  "name": "Straw Bed Modify",
+  "description": "Modifies straw bed behavior: persists after sleeping, explodes in Nether/End, toggleable spawn point setting.",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/straw_bed_modify/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-datagen": [
+      "com.yourname.straw_bed_modify.client.Straw_bed_modifyDataGenerator"
+    ],
+    "client": [
+      "com.yourname.straw_bed_modify.client.Straw_bed_modifyClient"
+    ],
+    "main": [
+      "com.yourname.straw_bed_modify.Straw_bed_modify"
+    ]
+  },
+  "mixins": [
+    "straw_bed_modify.mixins.json",
+    {
+      "config": "straw_bed_modify.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": ">=26.3-alpha"
+  }
+}
