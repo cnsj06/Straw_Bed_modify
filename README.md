@@ -17,7 +17,7 @@
 | `/strawbed spawnpoint <true\|false>` | `false` | 睡醒后是否设置玩家出生点 |
 | `/strawbed explode <true\|false>` | `false` | 在下界/末地点击时是否爆炸 |
 | `/strawbed vanish <true\|false>` | `true` | 睡醒后稻草床是否消失 |
-| `/strawbed equiv <default\|0~64>` | `default` | 爆炸力度，仅在 `explode` 为 `true` 时生效 |
+| `/strawbed equiv <default\|0~32>` | `default` | 爆炸力度，仅在 `explode` 为 `true` 时生效 |
 
 ### 爆炸力度（`equiv`）
 
@@ -26,6 +26,9 @@
 - `0` —— 仍有爆炸的音效和粒子，但半径为 0，不破坏方块、不造成伤害
 - `default` —— 5.0，与原版床一致
 - 数值越大，破坏范围和伤害越高（原版 TNT 为 4，床/重生锚为 5，凋灵为 7）
+- **破坏半径 = 数值 × 2**，上限 `32` 即半径 64 格。实测更大的值会明显拖慢服务端，故设此上限；超出范围的输入会被拒绝，读取时也会被收敛到 `32`
+
+> 旧版本存档里已存的更大值（例如 `64`）**仍可正常加载**，只是按上限 `32` 生效 —— 上限是靠输入校验 + 读取时收敛实现的，没有收窄存档解码范围（收窄会让整份 `game_rules.dat` 解码失败，把该存档所有游戏规则重置）。
 
 > 内部实现上 `default` 存为哨兵值 `-1`，因此 `/gamerule` 里会显示 `-1`（已在规则名中标注）；用 `/strawbed equiv default` 复位即可，无需手输 -1。
 

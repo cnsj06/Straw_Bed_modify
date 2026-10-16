@@ -18,7 +18,7 @@ import net.minecraft.world.level.gamerules.GameRule;
  *   /strawbed spawnpoint &lt;true|false&gt;
  *   /strawbed explode    &lt;true|false&gt;
  *   /strawbed vanish     &lt;true|false&gt;
- *   /strawbed equiv      &lt;default|0-64&gt;
+ *   /strawbed equiv      &lt;default|0-32&gt;
  */
 public class StrawBedCommand {
 
