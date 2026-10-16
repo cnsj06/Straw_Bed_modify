@@ -2,6 +2,7 @@ package com.yourname.straw_bed_modify.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.yourname.straw_bed_modify.StrawBedGameRules;
 import net.minecraft.commands.CommandSourceStack;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.gamerules.GameRule;
  *   /strawbed spawnpoint &lt;true|false&gt;
  *   /strawbed explode    &lt;true|false&gt;
  *   /strawbed vanish     &lt;true|false&gt;
+ *   /strawbed equiv      &lt;default|0-64&gt;
  */
 public class StrawBedCommand {
 
@@ -35,6 +37,14 @@ public class StrawBedCommand {
                     .then(Commands.argument("value", BoolArgumentType.bool())
                         .executes(ctx -> setRule(ctx,
                             StrawBedGameRules.STRAW_BED_VANISH, "vanish"))))
+                .then(Commands.literal("equiv")
+                    // "default" restores vanilla's blast power; the sentinel is never typed by hand
+                    .then(Commands.literal("default")
+                        .executes(ctx -> setEquiv(ctx, StrawBedGameRules.EQUIV_DEFAULT)))
+                    .then(Commands.argument("value",
+                            IntegerArgumentType.integer(0, StrawBedGameRules.EQUIV_MAX))
+                        .executes(ctx -> setEquiv(ctx,
+                            IntegerArgumentType.getInteger(ctx, "value")))))
         );
     }
 
@@ -48,6 +58,25 @@ public class StrawBedCommand {
         context.getSource().sendSuccess(
             () -> Component.translatable(
                 "command.straw_bed_modify." + key + ".set", status),
+            true
+        );
+        return 1;
+    }
+
+    /**
+     * Set the explosion blast power. Returns 1 rather than the value itself, so that
+     * {@code /strawbed equiv 0} still counts as a success for command blocks.
+     */
+    private static int setEquiv(CommandContext<CommandSourceStack> context, int value) {
+        ServerLevel level = context.getSource().getLevel();
+        level.getGameRules().set(StrawBedGameRules.STRAW_BED_EQUIV, value,
+            context.getSource().getServer());
+
+        Component status = value == StrawBedGameRules.EQUIV_DEFAULT
+            ? Component.translatable("command.straw_bed_modify.equiv.default")
+            : Component.literal(Integer.toString(value));
+        context.getSource().sendSuccess(
+            () -> Component.translatable("command.straw_bed_modify.equiv.set", status),
             true
         );
         return 1;

@@ -32,9 +32,10 @@ public class Straw_bed_modify implements ModInitializer {
     public void onInitialize() {
         LOGGER.info("Initializing Straw Bed Modify mod...");
 
-        // Register game rules (spawnpoint, explode, vanish)
+        // Register game rules (spawnpoint, explode, vanish, equiv)
         StrawBedGameRules.initialize();
-        LOGGER.info("Registered 3 game rules: straw_bed_set_spawn, straw_bed_explode, straw_bed_vanish");
+        LOGGER.info("Registered 4 game rules: straw_bed_set_spawn, straw_bed_explode, "
+            + "straw_bed_vanish, straw_bed_equiv");
 
         // Register marching straw bed block and item
         Identifier marchingBedId = Identifier.fromNamespaceAndPath(MOD_ID, "marching_straw_bed");

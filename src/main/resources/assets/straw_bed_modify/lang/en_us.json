@@ -5,7 +5,10 @@
   "gamerule.straw_bed_modify.straw_bed_set_spawn": "Sets Spawn Point",
   "gamerule.straw_bed_modify.straw_bed_explode": "Explodes in Nether/End",
   "gamerule.straw_bed_modify.straw_bed_vanish": "Vanishes After Sleep",
+  "gamerule.straw_bed_modify.straw_bed_equiv": "Explosion Power (-1 = default)",
   "command.straw_bed_modify.spawnpoint.set": "Straw bed spawn point setting: %s",
   "command.straw_bed_modify.explode.set": "Straw bed explosion setting: %s",
-  "command.straw_bed_modify.vanish.set": "Straw bed vanish-after-sleep setting: %s"
+  "command.straw_bed_modify.vanish.set": "Straw bed vanish-after-sleep setting: %s",
+  "command.straw_bed_modify.equiv.set": "Straw bed explosion power: %s",
+  "command.straw_bed_modify.equiv.default": "default"
 }

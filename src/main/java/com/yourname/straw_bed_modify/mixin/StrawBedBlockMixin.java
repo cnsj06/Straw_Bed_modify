@@ -13,18 +13,29 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Bed destruction behaviour for straw beds.
+ *
+ * <p><b>Where the vanish gate lives:</b> {@code destroyOnLeave} is deliberately <em>not</em>
+ * intercepted here. The {@code straw_bed_vanish} rule is applied once, in
+ * {@code AbstractBedBlockMixin#onGetBedRule}, by rewriting {@code BedRule.destroyOnLeave}.
+ * Vanilla reaches {@code destroyOnLeave} only from {@code AbstractBedBlock.onStopSleeping},
+ * and only after that flag reads true, so a second gate here would never change the outcome
+ * — it would just be a second place to update.
+ */
 @Mixin(StrawBedBlock.class)
 public abstract class StrawBedBlockMixin {
 
     /**
      * Destroy the bed when used in dangerous dimensions (Nether/End).
-     * Explosion is controlled by the {@code straw_bed_explode} game rule:
+     * The blast is controlled by two game rules:
      * <ul>
-     *   <li>{@code true}  — explode (like vanilla BedBlock)</li>
-     *   <li>{@code false} — break quietly (vanilla straw bed behavior)</li>
+     *   <li>{@code straw_bed_explode} — {@code false} breaks the bed quietly (vanilla straw
+     *       bed behavior), {@code true} explodes like a vanilla bed</li>
+     *   <li>{@code straw_bed_equiv} — blast power used when exploding; its {@code default}
+     *       setting resolves to vanilla's 5.0</li>
      * </ul>
      */
     @Inject(method = "destroyOnUse", at = @At("HEAD"), cancellable = true)
@@ -40,35 +51,22 @@ public abstract class StrawBedBlockMixin {
             level.removeBlock(otherPos, false);
         }
 
-        // Only explode if the game rule allows it
-        if (level instanceof ServerLevel serverLevel
-            && serverLevel.getGameRules().get(StrawBedGameRules.STRAW_BED_EXPLODE)) {
-            Vec3 explosionPos = Vec3.atCenterOf(pos);
-            level.explode(
-                null,
-                level.damageSources().badRespawnPointExplosion(explosionPos),
-                null,
-                explosionPos,
-                5.0F,
-                true,
-                Level.ExplosionInteraction.BLOCK
-            );
-        }
-        cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
-    }
-
-    /**
-     * When vanish is disabled (default), prevent the bed from being destroyed.
-     * When vanish is enabled, let vanilla behavior execute.
-     */
-    @Inject(method = "destroyOnLeave", at = @At("HEAD"), cancellable = true)
-    private void onDestroyOnLeave(Level level, BlockPos pos, CallbackInfo ci) {
+        // Only explode if the game rule allows it; power comes from straw_bed_equiv
         if (level instanceof ServerLevel serverLevel) {
-            boolean shouldVanish = serverLevel.getGameRules()
-                .get(StrawBedGameRules.STRAW_BED_VANISH);
-            if (!shouldVanish) {
-                ci.cancel();
+            var gameRules = serverLevel.getGameRules();
+            if (gameRules.get(StrawBedGameRules.STRAW_BED_EXPLODE)) {
+                Vec3 explosionPos = Vec3.atCenterOf(pos);
+                level.explode(
+                    null,
+                    level.damageSources().badRespawnPointExplosion(explosionPos),
+                    null,
+                    explosionPos,
+                    StrawBedGameRules.resolveExplosionPower(gameRules),
+                    true,
+                    Level.ExplosionInteraction.BLOCK
+                );
             }
         }
+        cir.setReturnValue(InteractionResult.SUCCESS_SERVER);
     }
 }

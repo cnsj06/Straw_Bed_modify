@@ -15,6 +15,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Override BedRule for straw beds to respect our game rules.
  * getBedRule() is defined in AbstractBedBlock, so we must target the parent class.
+ *
+ * <p><b>Precedence (intentional):</b> the mod's game rules deliberately win over the
+ * data-driven vanilla {@code minecraft:gameplay/straw_bed_rule}, which since MC 26.3 is
+ * configured per dimension via {@code dimension_type} JSON ({@code can_set_spawn},
+ * {@code can_sleep}, {@code destroy_on_use}, {@code destroy_on_leave}).
+ * The vanilla values read back for {@code canSetSpawn} and {@code destroyOnLeave} are
+ * therefore discarded on purpose — this is <em>not</em> a bug, so do not "fix" it into an
+ * intersection. Only {@code canSleep}, {@code destroyOnUse} and {@code errorMessage}
+ * are passed through untouched.
+ *
+ * <p>This method is also the <b>only</b> place the {@code straw_bed_vanish} rule is applied.
+ * Vanilla reads {@code destroyOnLeave} in {@code AbstractBedBlock.onStopSleeping} and calls
+ * {@code destroyOnLeave} only when it is true, so gating that method again would be dead
+ * weight.
  */
 @Mixin(AbstractBedBlock.class)
 public abstract class AbstractBedBlockMixin {
@@ -36,6 +50,7 @@ public abstract class AbstractBedBlockMixin {
             original.canSleep(),
             canSetSpawn ? BedRule.Rule.ALWAYS : BedRule.Rule.NEVER,
             original.destroyOnUse(),  // always destroy — explosion controlled by mixin
+            // Mod rule takes precedence over vanilla straw_bed_rule.destroy_on_leave — see class javadoc
             shouldVanish,
             original.errorMessage()
         );
